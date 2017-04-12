@@ -1,0 +1,12 @@
+# Virtual env
+venv/
+venvs/
+
+# Compilated python files
+*.pyc
+
+# SQLite databases
+*.sqlite
+*.sqlite1
+*.sqlite2
+*.sqlite3
