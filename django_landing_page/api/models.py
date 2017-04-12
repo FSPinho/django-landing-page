@@ -44,7 +44,7 @@ class Link(models.Model):
                                 format=DEFAULT_ICON_FORMAT,
                                 options={'quality': DEFAULT_ICON_QUALITY})
     
-    apperance = CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH, 
+    apperance = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH, 
                             choices=LINK_APERRANCE_TYPES, 
                             default=DEFAULT_LINK_APERRANCE_TYPE)
 
