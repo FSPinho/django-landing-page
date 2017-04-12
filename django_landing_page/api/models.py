@@ -34,12 +34,19 @@ DEFAULT_LINK_APERRANCE_TYPE = 'text'
 # ----------- MODEL CLASSES ------------ #
 
 class Page(models.Model):
-    pass
+    name = models.CharField(max_length=255, default='', null=False)
+
+    class Meta:
+        verbose_name = 'Page'
+        verbose_name_plural = 'Pages'
+
+    def __unicode__(self):
+        return self.name
 
 
 class Link(models.Model):
-    name = models.CharField(max_length=255, default='', null=False)
-    icon = ProcessedImageField(upload_to=DEFAULT_ICON_UPLOAD_FOLDER,
+    icon = ProcessedImageField(null=True, default=None, 
+                                upload_to=DEFAULT_ICON_UPLOAD_FOLDER,
                                 processors=[ResizeToFill(192, 192)],
                                 format=DEFAULT_ICON_FORMAT,
                                 options={'quality': DEFAULT_ICON_QUALITY})
@@ -52,16 +59,27 @@ class Link(models.Model):
         abstract = True
 
 
-    def __unicode__(self):
-        return '' % self.name
-
-
 class PageLink(Link):
     page = models.ForeignKey(Page)
 
     class Meta:
         verbose_name = 'Page Link'
         verbose_name_plural = 'Page Links'
+
+    def __unicode__(self):
+        return 'Link to %s page' % self.page
+
+
+class SocialLink(Link):
+    name = models.CharField(max_length=255, default='', null=False)
+    url = models.URLField()
+
+    class Meta:
+        verbose_name = 'Social Link'
+        verbose_name_plural = 'Social Links'
+    
+    def __unicode__(self):
+        return 'Social link to %s at %s' % (self.name, self.url)
 
 
 # ----------- END - MODEL CLASSES ------------ #
