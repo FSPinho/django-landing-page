@@ -16,3 +16,6 @@ venvs/
 
 # media folders
 /uploads
+
+# NPM
+node_modules/
