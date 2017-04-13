@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django_landing_page.staticFilesConfig.CustomStaticFilesConfig',
 
+    'rest_framework',
     'api',
     'django_cleanup',
 ]
