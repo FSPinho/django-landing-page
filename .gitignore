@@ -10,3 +10,9 @@ venvs/
 *.sqlite1
 *.sqlite2
 *.sqlite3
+
+# IDEs
+.idea/
+
+# media folders
+/uploads
