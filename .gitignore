@@ -14,8 +14,8 @@ venvs/
 # IDEs
 .idea/
 
-# media folders
-/uploads
+# static folders
+media/
 
 # NPM
 node_modules/

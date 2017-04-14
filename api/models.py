@@ -92,6 +92,10 @@ class Page(models.Model):
     def __unicode__(self):
         return self.name
 
+    @property
+    def path(self):
+        return "landing/%s" % self.alias
+
 
 class Link(models.Model):
     icon = ProcessedImageField(null=True, default=None,

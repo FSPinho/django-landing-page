@@ -3,18 +3,6 @@ from rest_framework import serializers
 from api.models import Page, Toolbar, PageLink, SocialLink, ToolbarLink
 
 
-class PageSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Page
-        fields = '__all__'
-
-
-class ToolbarSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Toolbar
-        fields = '__all__'
-
-
 class PageLinkSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = PageLink
@@ -30,4 +18,19 @@ class SocialLinkSerializer(serializers.HyperlinkedModelSerializer):
 class ToolbarLinkSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ToolbarLink
-        fields = '__all__'
+        exclude = ('toolbar', )
+
+
+class ToolbarSerializer(serializers.ModelSerializer):
+    links = ToolbarLinkSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Toolbar
+        fields = ('name', 'showPageName', 'icon', 'links')
+
+
+class PageSerializer(serializers.ModelSerializer):
+    toolbar = ToolbarSerializer()
+    class Meta:
+        model = Page
+        fields = ('name', 'shortName', 'alias', 'path', 'toolbar')

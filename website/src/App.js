@@ -8,7 +8,8 @@ import createSagaMiddleware from 'redux-saga'
 
 import reducers from 'api/reducers'
 import sagas from 'api/sagas'
-import { AppRouter } from 'components';
+import { actions } from 'api/actions'
+import { AppRouter } from 'components'
 
 class App extends Component {
 
@@ -24,11 +25,15 @@ class App extends Component {
 				router: routerReducer,
 			}),
 			applyMiddleware(
-				routerMiddleware(history), 
+				routerMiddleware(history),
 				sagaMiddleware
 			)
 		)
 		sagaMiddleware.run(sagas);
+
+		this.store.dispatch({
+			type: actions.model.do.load
+		})
 	}
 
 	render() {
