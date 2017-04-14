@@ -3,20 +3,19 @@ import { actions } from 'api/actions'
 
 const initialState = fromJS({
     status: {
-        isLoading: false,
+        isLoading: true,
     },
     model: {
-        page: [],
-        pageLink: [],
-        socialLink: [],
+        'page': [],
+        'page-link': [],
+        'social-link': [],
     }
 })
 
 export default (state = initialState, action) => {
+
     if (action.type === actions.model.done.load) {
-        console.log(action.payload)
-        state = state.set('model', action.payload)
-        console.log(state.toJS())
+        return state.merge({ status: { isLoading: false }, model: action.payload })
     }
 
     return state
