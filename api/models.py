@@ -96,6 +96,13 @@ class Page(models.Model):
     def path(self):
         return "landing/%s" % self.alias
 
+    def save(self, *args, **kwargs):
+        super(Page, self).save(*args, **kwargs);
+
+        oldPageLinks = PageLink.objects.filter(page=self)
+        if len(oldPageLinks) == 0:
+            PageLink.objects.create(page=self)
+
 
 class Link(models.Model):
     icon = ProcessedImageField(null=True, default=None,

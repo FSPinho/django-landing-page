@@ -3,10 +3,12 @@ from rest_framework import serializers
 from api.models import Page, Toolbar, PageLink, SocialLink, ToolbarLink
 
 
-class PageLinkSerializer(serializers.HyperlinkedModelSerializer):
+class PageLinkSerializer(serializers.ModelSerializer):
+    page = serializers.SlugRelatedField(read_only=True, slug_field='path')
     class Meta:
         model = PageLink
-        fields = '__all__'
+        fields = ('icon', 'appearance', 'openNewTab', 'page')
+        depth = 1
 
 
 class SocialLinkSerializer(serializers.HyperlinkedModelSerializer):

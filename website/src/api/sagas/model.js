@@ -6,10 +6,10 @@ import { crud } from 'api/service'
 function* doLoadModel() {
     
     try {
-        const payload = yield crud.getApiRoot()
-        put({ type: actions.model.fail.load, payload })
+        const payload = yield crud.getModels()
+        yield put({ type: actions.model.done.load, payload })
     } catch(err) {
-        put({ type: actions.model.fail.load, payload: err })
+        yield put({ type: actions.model.fail.load, payload: err })
     }
     
 

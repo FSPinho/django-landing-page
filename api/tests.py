@@ -4,21 +4,6 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from api.models import PageLink, SocialLink, Page, Toolbar, ToolbarLink
 
-
-class PageLinkTest(TestCase):
-    def setUp(self):
-        page = Page.objects.create(name='home', alias='home')
-        PageLink.objects.create(appearance='text', page=page)
-        PageLink.objects.create(appearance='button', page=page)
-    
-    def testPageLinkCreatedSuccessfully(self):
-        pl1 = PageLink.objects.get(appearance='text')
-        pl2 = PageLink.objects.get(appearance='button')
-
-        self.assertEqual(pl1.page.name, 'home')
-        self.assertEqual(pl2.page.name, 'home')
-
-
 class SocialLinkTest(TestCase):
     def setUp(self):
         SocialLink.objects.create(name='facebook', url='https://www.facebook.com', appearance='text')
@@ -68,3 +53,8 @@ class PageTest(TestCase):
 
     def testPageCreatedSuccessfully(self):
         page = Page.objects.get(name='Home page')
+        pl = PageLink.objects.get(page=page)
+        self.assertEqual(pl.page, page)
+        page.delete()
+        currentPageLinksLength = len(PageLink.objects.filter(page=page))
+        self.assertEqual(currentPageLinksLength, 0)
