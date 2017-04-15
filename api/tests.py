@@ -8,7 +8,7 @@ class SocialLinkTest(TestCase):
     def setUp(self):
         SocialLink.objects.create(name='facebook', url='https://www.facebook.com', appearance='text')
         SocialLink.objects.create(name='twitter', url='https://www.twitter.com', appearance='button')
-    
+
     def testSocialLinkCreatedSuccessfully(self):
         sl1 = SocialLink.objects.get(name='facebook')
         sl2 = SocialLink.objects.get(name='twitter')

@@ -6,13 +6,13 @@ from api.models import Page, Toolbar, PageLink, SocialLink, ToolbarLink
 class SimplePageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
-        fields = ('name', 'shortName', 'path')    
+        fields = ('name', 'shortName', 'path', 'mainPage', 'order')
 
 class PageLinkSerializer(serializers.ModelSerializer):
     page = SimplePageSerializer()
     class Meta:
         model = PageLink
-        fields = ('icon', 'appearance', 'openNewTab', 'page')
+        fields = ('icon', 'appearance', 'openNewTab', 'page', 'color')
         depth = 1
 
 
@@ -40,4 +40,4 @@ class PageSerializer(serializers.ModelSerializer):
     toolbar = ToolbarSerializer()
     class Meta:
         model = Page
-        fields = ('name', 'shortName', 'alias', 'path', 'toolbar')
+        fields = ('name', 'shortName', 'alias', 'path', 'toolbar', 'mainPage')

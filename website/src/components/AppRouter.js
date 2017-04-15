@@ -5,7 +5,7 @@ import { ConnectedRouter } from 'react-router-redux'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
-import { Page, Sidenav } from 'components'
+import { Page } from 'components'
 
 class AppRouter extends Component {
 
@@ -22,7 +22,7 @@ class AppRouter extends Component {
             <ConnectedRouter history={this.props.history}>
                 <MuiThemeProvider muiTheme={muiTheme}>
                     <div>
-                        <Sidenav />
+                        
                         {
                             pageLinks.map(pl => (
                                 <Route exact key={pl.page.name} path={`/${pl.page.path}`.replace(/\/+/, '/')}

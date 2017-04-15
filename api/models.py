@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.db.models.aggregates import Max
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 from os.path import join
@@ -30,6 +31,12 @@ LINK_APERRANCE_TYPES = (
     ('button', 'Like a button'),
 )
 DEFAULT_LINK_APERRANCE_TYPE = 'text'
+LINK_COLORS = (
+    ('default', 'Default color'),
+    ('primary', 'Primary color'),
+    ('accent', 'Accent color'),
+)
+DEFAULT_LINK_COLOR = 'default'
 
 DEVICE_TYPES = (
     ('small', 'Phones'),
@@ -75,6 +82,7 @@ class Page(models.Model):
     shortName = models.CharField(max_length=DEFAULT_PAGE_SHORT_NAME_LENGTH,
                                  default=None,
                                  null=True,
+                                 verbose_name='Short Name',
                                  help_text='Short version of the page name',
                                  blank=True)
     alias = models.SlugField(max_length=DEFAULT_PAGE_NAME_LENGTH,
@@ -84,6 +92,9 @@ class Page(models.Model):
                              help_text='Will be used as the page URL',
                              blank=False)
     toolbar = models.ForeignKey(Toolbar, null=True, blank=True)
+
+    mainPage = models.BooleanField(default=False, verbose_name='Is the main page', )
+    order = models.PositiveSmallIntegerField(default=1, help_text='Used to sort items in toolbar')
 
     class Meta:
         verbose_name = 'Page'
@@ -105,7 +116,7 @@ class Page(models.Model):
 
 
 class Link(models.Model):
-    icon = ProcessedImageField(null=True, default=None,
+    icon = ProcessedImageField(null=True, default=None, blank=True, 
                                upload_to=DEFAULT_ICON_UPLOAD_FOLDER,
                                processors=[ResizeToFill(DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE)],
                                format=DEFAULT_ICON_FORMAT,
@@ -113,6 +124,10 @@ class Link(models.Model):
     appearance = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
                                   choices=LINK_APERRANCE_TYPES,
                                   default=DEFAULT_LINK_APERRANCE_TYPE,
+                                  null=False)
+    color = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
+                                  choices=LINK_COLORS,
+                                  default=DEFAULT_LINK_COLOR,
                                   null=False)
     openNewTab = models.BooleanField(default=True, verbose_name='Open this link in a new tab?')
 
@@ -128,7 +143,7 @@ class PageLink(Link):
         verbose_name_plural = 'Page Links'
 
     def __unicode__(self):
-        return 'Link to %s page' % self.page
+        return 'Link to %s page' % (self.order, self.page)
 
 
 class SocialLink(Link):
