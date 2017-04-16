@@ -1,18 +1,18 @@
 from rest_framework import serializers
 
-from api.models import Page, Toolbar, PageLink, SocialLink, ToolbarLink
+from api.models import Page, Toolbar, PageLink, SocialLink, ToolbarLink, Section, ColorPrimary
 
 
 class SimplePageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
-        fields = ('name', 'shortName', 'path', 'mainPage', 'order')
+        fields = ('id', 'name', 'shortName', 'path', 'mainPage', 'order')
 
 class PageLinkSerializer(serializers.ModelSerializer):
     page = SimplePageSerializer()
     class Meta:
         model = PageLink
-        fields = ('icon', 'appearance', 'openNewTab', 'page', 'color')
+        fields = ('id', 'icon', 'appearance', 'openNewTab', 'page')
         depth = 1
 
 
@@ -25,7 +25,7 @@ class SocialLinkSerializer(serializers.HyperlinkedModelSerializer):
 class ToolbarLinkSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ToolbarLink
-        exclude = ('toolbar', )
+        exclude = ('id', 'toolbar', )
 
 
 class ToolbarSerializer(serializers.ModelSerializer):
@@ -33,11 +33,29 @@ class ToolbarSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Toolbar
-        fields = ('name', 'showPageName', 'icon', 'links')
+        fields = ('id', 'name', 'showPageName', 'icon', 'links')
+
+
+class ColorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ColorPrimary
+        fields = '__all__'
+
+
+class SectionSerializer(serializers.ModelSerializer):
+    page = SimplePageSerializer
+    backgroundColor = ColorSerializer()
+    class Meta:
+        model = Section
+        fields = ('id', 'name', 'order', 'fullHeight', 'backgroundColor',
+                  'backgroundImageSmall', 'backgroundImageMedium', 'backgroundImageLarge', 'backgroundImageXLarge')
 
 
 class PageSerializer(serializers.ModelSerializer):
     toolbar = ToolbarSerializer()
+    sections = SectionSerializer(many=True)
     class Meta:
         model = Page
-        fields = ('name', 'shortName', 'alias', 'path', 'toolbar', 'mainPage')
+        fields = ('id', 'name', 'shortName', 'alias', 'path', 'toolbar', 'mainPage', 'sections')
+
+

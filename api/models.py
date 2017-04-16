@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.db.models.aggregates import Max
 from imagekit.models import ProcessedImageField
+from imagekit.models.fields import ImageSpecField
 from imagekit.processors import ResizeToFill
 from os.path import join
 
@@ -55,20 +56,26 @@ class Color(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
                             default=None,
                             null=False,
-                            blank=False,)
+                            blank=False, )
     value = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
-                            default=None,
-                            null=False,
-                            blank=False,)
-    
-    type = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
-                            default=DEFAULT_COLOR_TYPE,
-                            null=False,
-                            blank=False,
-                            choices=COLOR_TYPES)
+                             default=None,
+                             null=False,
+                             blank=False, )
+
+    class Meta:
+        abstract = True
 
     def __unicode__(self):
-        return self.name
+        return '%s - %s' % (self.name, self.value)
+
+
+class ColorPrimary(Color):
+    pass
+
+
+class ColorAccent(Color):
+    pass
+
 
 class Toolbar(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
@@ -135,7 +142,7 @@ class Page(models.Model):
 
 
 class Link(models.Model):
-    icon = ProcessedImageField(null=True, default=None, blank=True, 
+    icon = ProcessedImageField(null=True, default=None, blank=True,
                                upload_to=DEFAULT_ICON_UPLOAD_FOLDER,
                                processors=[ResizeToFill(DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE)],
                                format=DEFAULT_ICON_FORMAT,
@@ -143,10 +150,6 @@ class Link(models.Model):
     appearance = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
                                   choices=LINK_APERRANCE_TYPES,
                                   default=DEFAULT_LINK_APERRANCE_TYPE,
-                                  null=False)
-    color = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
-                                  choices=COLOR_TYPES,
-                                  default=DEFAULT_COLOR_TYPE,
                                   null=False)
     openNewTab = models.BooleanField(default=True, verbose_name='Open this link in a new tab?')
 
@@ -190,5 +193,60 @@ class ToolbarLink(Link):
 
 
 class Section(models.Model):
+    name = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
+                            default=None,
+                            null=True,
+                            blank=True,
+                            help_text='Only visible to you. Use it to manage yours sections')
+    page = models.ManyToManyField(Page, related_name='sections', default=None, null=True, blank=True)
+    order = models.SmallIntegerField(default=1)
     fullHeight = models.BooleanField(default=False)
-    backgroundColor = models.ForeignKey(Color, default=None, null=True)
+    backgroundColor = models.ForeignKey(ColorPrimary, default=None, null=True, blank=True)
+    backgroundImage = models.ImageField(upload_to=DEFAULT_IMAGE_UPLOAD_FOLDER,
+                                        default=None, null=True, blank=True)
+    __backgroundImageSmall = ImageSpecField(source='backgroundImage',
+                                          processors=[ResizeToFill(640, 360)],
+                                          format='PNG',
+                                          options={'quality': 60})
+    __backgroundImageMedium = ImageSpecField(source='backgroundImage',
+                                           processors=[ResizeToFill(1280, 720)],
+                                           format='PNG',
+                                           options={'quality': 60})
+    __backgroundImageLarge = ImageSpecField(source='backgroundImage',
+                                          processors=[ResizeToFill(1920, 1080)],
+                                          format='PNG',
+                                          options={'quality': 60})
+    __backgroundImageXLarge = ImageSpecField(source='backgroundImage',
+                                           processors=[ResizeToFill(3840, 2160)],
+                                           format='PNG',
+                                           options={'quality': 60})
+
+    def __hasImageField(self):
+        try:
+            return self.backgroundImage.url is not None
+        except Exception:
+            return None
+
+    @property
+    def backgroundImageSmall(self):
+        if self.__hasImageField():
+            return self.__backgroundImageSmall.url
+        return None
+
+    @property
+    def backgroundImageMedium(self):
+        if self.__hasImageField():
+            return self.__backgroundImageMedium.url
+        return None
+
+    @property
+    def backgroundImageLarge(self):
+        if self.__hasImageField():
+            return self.__backgroundImageLarge.url
+        return None
+
+    @property
+    def backgroundImageXLarge(self):
+        if self.__hasImageField():
+            return self.__backgroundImageXLarge.url
+        return None

@@ -13,9 +13,12 @@ class PageAdmin(admin.ModelAdmin):
 class ToolbarAdmin(admin.ModelAdmin):
     list_display = ('name', 'showPageName',)
 
+class SectionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'order', 'fullHeight', 'backgroundColor', 'backgroundImage')
+
 # admin.site.register(PageLink)
 admin.site.register(SocialLink)
 admin.site.register(ToolbarLink)
 admin.site.register(Toolbar, ToolbarAdmin)
 admin.site.register(Page, PageAdmin)
-admin.site.register(Section)
+admin.site.register(Section, SectionAdmin)
