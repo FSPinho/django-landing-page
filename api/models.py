@@ -31,12 +31,12 @@ LINK_APERRANCE_TYPES = (
     ('button', 'Like a button'),
 )
 DEFAULT_LINK_APERRANCE_TYPE = 'text'
-LINK_COLORS = (
+COLOR_TYPES = (
     ('default', 'Default color'),
     ('primary', 'Primary color'),
     ('accent', 'Accent color'),
 )
-DEFAULT_LINK_COLOR = 'default'
+DEFAULT_COLOR_TYPE = 'default'
 
 DEVICE_TYPES = (
     ('small', 'Phones'),
@@ -50,6 +50,25 @@ DEVICE_TYPES = (
 
 
 # ----------- MODEL CLASSES ------------ #
+
+class Color(models.Model):
+    name = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
+                            default=None,
+                            null=False,
+                            blank=False,)
+    value = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
+                            default=None,
+                            null=False,
+                            blank=False,)
+    
+    type = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
+                            default=DEFAULT_COLOR_TYPE,
+                            null=False,
+                            blank=False,
+                            choices=COLOR_TYPES)
+
+    def __unicode__(self):
+        return self.name
 
 class Toolbar(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
@@ -126,8 +145,8 @@ class Link(models.Model):
                                   default=DEFAULT_LINK_APERRANCE_TYPE,
                                   null=False)
     color = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
-                                  choices=LINK_COLORS,
-                                  default=DEFAULT_LINK_COLOR,
+                                  choices=COLOR_TYPES,
+                                  default=DEFAULT_COLOR_TYPE,
                                   null=False)
     openNewTab = models.BooleanField(default=True, verbose_name='Open this link in a new tab?')
 
@@ -168,3 +187,8 @@ class ToolbarLink(Link):
     class Meta:
         verbose_name = 'Toolbar Link'
         verbose_name_plural = 'Toolbar Links'
+
+
+class Section(models.Model):
+    fullHeight = models.BooleanField(default=False)
+    backgroundColor = models.ForeignKey(Color, default=None, null=True)

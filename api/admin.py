@@ -2,9 +2,8 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from api.models import PageLink, SocialLink, ToolbarLink, Toolbar, Page
+from api.models import PageLink, SocialLink, ToolbarLink, Toolbar, Page, Section
 
-# Register your models here.
 
 class PageAdmin(admin.ModelAdmin):
     list_display = ('name', 'shortName', 'alias', 'path', 'mainPage', 'order')
@@ -19,3 +18,4 @@ admin.site.register(SocialLink)
 admin.site.register(ToolbarLink)
 admin.site.register(Toolbar, ToolbarAdmin)
 admin.site.register(Page, PageAdmin)
+admin.site.register(Section)
