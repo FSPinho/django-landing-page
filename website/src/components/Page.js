@@ -5,7 +5,7 @@ import { AppBar, Drawer, MenuItem, Toolbar, ToolbarGroup, ToolbarTitle, FlatButt
 import muiThemeable from 'material-ui/styles/muiThemeable'
 import { fade } from 'material-ui/utils/colorManipulator';
 
-import { Section } from 'components'
+import { Section, Footer } from 'components'
 
 class Page extends Component {
 
@@ -22,8 +22,8 @@ class Page extends Component {
     toggleDrawer = () => (this.setDrawerState(!this.state.drawer.opened))
     close = () => (this.setState(false))
 
-    onPageLinkClicked = pageLink => {
-        console.log(pageLink)
+    onPageLinkClicked = page => {
+        console.log(page)
     }
 
     componentDidMount() {
@@ -35,11 +35,12 @@ class Page extends Component {
     render() {
         const theme = this.props.muiTheme
         const pages = this.props.store.model.getIn(['model', 'page']).toJS()
-        const page = pages.filter(p => (p.name === this.props.page.name))[0]
-        const pageLinks = this.props.store.model.getIn(['model', 'page-link']).toJS()
             .sort((a, b) => (
-                a.page.mainPage ? -1 : (b.page.mainPage ? 1 : (a.order - b.order))
+                a.mainPage ? -1 : (b.mainPage ? 1 : (a.order - b.order))
             ))
+        const page = this.props.page
+        const footer = page.footer
+
         const sections = page.sections.sort((a, b) => (
             a.order - b.order
         ))
@@ -64,8 +65,8 @@ class Page extends Component {
                     onRequestChange={this.setDrawerState}
                 >
                     {
-                        pageLinks.map(pl => (
-                            <MenuItem key={pl.page.name} onTouchTap={() => this.onPageLinkClicked(pl)}>{pl.page.name}</MenuItem>
+                        pages.map(p => (
+                            <MenuItem key={p.name} onTouchTap={() => this.onPageLinkClicked(p)}>{p.name}</MenuItem>
                         ))
                     }
 
@@ -81,6 +82,7 @@ class Page extends Component {
                             <Toolbar
                                 style={{
                                     position: 'fixed',
+                                    zIndex: 1000,
                                     left: 0,
                                     right: 0,
                                     backgroundColor: fade(this.props.muiTheme.palette.primary1Color, toolbarOpacity),
@@ -93,29 +95,17 @@ class Page extends Component {
                                 </ToolbarGroup>
                                 <ToolbarGroup>
                                     {
-                                        pageLinks.map(pl => (
-                                            pl.appearance === 'text' ? (
-                                                <FlatButton key={pl.page.name}
-                                                    style={{
-                                                        color: this.props.muiTheme.palette.alternateTextColor,
-                                                        marginLeft: 10,
-                                                        marginRight: 0,
-                                                    }}
-                                                    label={pl.page.name}
-                                                    onTouchTap={() => this.onPageLinkClicked(pl)} />
-                                            ) : (
-                                                    <RaisedButton key={pl.page.name}
-                                                        style={{
-                                                            color: this.props.muiTheme.palette.alternateTextColor,
-                                                            marginLeft: 10,
-                                                            marginRight: 0,
-                                                        }}
-                                                        primary={pl.color === 'primary'}
-                                                        secondary={pl.color === 'accent'}
-                                                        label={pl.page.name}
-                                                        onTouchTap={() => this.onPageLinkClicked(pl)} />
-                                                )
-                                        ))
+                                        pages.filter(p => p.showInNavigation).map(p => (
+
+                                            <FlatButton key={p.name}
+                                                style={{
+                                                    color: this.props.muiTheme.palette.alternateTextColor,
+                                                    marginLeft: 10,
+                                                    marginRight: 0,
+                                                }}
+                                                label={p.name}
+                                                onTouchTap={() => this.onPageLinkClicked(p)} />)
+                                        )
                                     }
                                 </ToolbarGroup>
                             </Toolbar>
@@ -125,6 +115,9 @@ class Page extends Component {
                     page.sections.map(section => (
                         <Section key={section.id} section={section} />
                     ))
+                }
+                {
+                    footer ? (<Footer footer={footer} />) : ('')
                 }
             </div>
         )

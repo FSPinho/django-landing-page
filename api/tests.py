@@ -53,8 +53,5 @@ class PageTest(TestCase):
 
     def testPageCreatedSuccessfully(self):
         page = Page.objects.get(name='Home page')
-        pl = PageLink.objects.get(page=page)
-        self.assertEqual(pl.page, page)
-        page.delete()
-        currentPageLinksLength = len(PageLink.objects.filter(page=page))
-        self.assertEqual(currentPageLinksLength, 0)
+
+

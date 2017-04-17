@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from api.models import PageLink, SocialLink, ToolbarLink, Toolbar, Page, Section
+from api.models import SocialLink, ToolbarLink, Toolbar, Page, Section, Footer
 
 
 class PageAdmin(admin.ModelAdmin):
@@ -16,9 +16,9 @@ class ToolbarAdmin(admin.ModelAdmin):
 class SectionAdmin(admin.ModelAdmin):
     list_display = ('name', 'order', 'fullHeight', 'backgroundColor', 'backgroundImage')
 
-# admin.site.register(PageLink)
 admin.site.register(SocialLink)
 admin.site.register(ToolbarLink)
 admin.site.register(Toolbar, ToolbarAdmin)
 admin.site.register(Page, PageAdmin)
 admin.site.register(Section, SectionAdmin)
+admin.site.register(Footer)

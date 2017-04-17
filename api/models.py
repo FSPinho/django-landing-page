@@ -82,7 +82,7 @@ class Toolbar(models.Model):
                             default=None,
                             null=True,
                             blank=True,
-                            help_text='Only visible to you. Use it to manage yours toolbars')
+                            help_text='Only visible to you. Use it to manage your toolbars')
     showPageName = models.BooleanField(default=True)
     icon = ProcessedImageField(null=True, default=None,
                                help_text='The icon should be a square image',
@@ -97,6 +97,19 @@ class Toolbar(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class Footer(models.Model):
+    name = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
+                            default=None,
+                            null=True,
+                            blank=True,
+                            help_text='Only visible to you. Use it to manage your footers')
+    copyrightText = models.CharField(max_length=DEFAULT_TEXT_INPUT_MAX_LENGTH,
+                                     default=None,
+                                     null=True,
+                                     blank=True,
+                                     verbose_name='Copyright text')
 
 
 class Page(models.Model):
@@ -118,9 +131,13 @@ class Page(models.Model):
                              help_text='Will be used as the page URL',
                              blank=False)
     toolbar = models.ForeignKey(Toolbar, null=True, blank=True)
+    footer = models.ForeignKey(Footer, null=True, blank=True)
 
     mainPage = models.BooleanField(default=False, verbose_name='Is the main page', )
     order = models.PositiveSmallIntegerField(default=1, help_text='Used to sort items in toolbar')
+
+    showInNavigation = models.BooleanField(default=True, verbose_name='Show in navigation (toolbar and sidenav)')
+    showInFooter = models.BooleanField(default=False, verbose_name='Show in footer')
 
     class Meta:
         verbose_name = 'Page'
@@ -132,13 +149,6 @@ class Page(models.Model):
     @property
     def path(self):
         return "landing/%s" % self.alias
-
-    def save(self, *args, **kwargs):
-        super(Page, self).save(*args, **kwargs);
-
-        oldPageLinks = PageLink.objects.filter(page=self)
-        if len(oldPageLinks) == 0:
-            PageLink.objects.create(page=self)
 
 
 class Link(models.Model):
@@ -155,17 +165,6 @@ class Link(models.Model):
 
     class Meta:
         abstract = True
-
-
-class PageLink(Link):
-    page = models.ForeignKey(Page)
-
-    class Meta:
-        verbose_name = 'Page Link'
-        verbose_name_plural = 'Page Links'
-
-    def __unicode__(self):
-        return 'Link to %s page' % (self.order, self.page)
 
 
 class SocialLink(Link):
@@ -197,7 +196,7 @@ class Section(models.Model):
                             default=None,
                             null=True,
                             blank=True,
-                            help_text='Only visible to you. Use it to manage yours sections')
+                            help_text='Only visible to you. Use it to manage your sections')
     page = models.ManyToManyField(Page, related_name='sections', default=None, null=True, blank=True)
     order = models.SmallIntegerField(default=1)
     fullHeight = models.BooleanField(default=False)
@@ -205,21 +204,21 @@ class Section(models.Model):
     backgroundImage = models.ImageField(upload_to=DEFAULT_IMAGE_UPLOAD_FOLDER,
                                         default=None, null=True, blank=True)
     __backgroundImageSmall = ImageSpecField(source='backgroundImage',
-                                          processors=[ResizeToFill(640, 360)],
-                                          format='PNG',
-                                          options={'quality': 60})
+                                            processors=[ResizeToFill(640, 360)],
+                                            format='PNG',
+                                            options={'quality': 60})
     __backgroundImageMedium = ImageSpecField(source='backgroundImage',
-                                           processors=[ResizeToFill(1280, 720)],
-                                           format='PNG',
-                                           options={'quality': 60})
+                                             processors=[ResizeToFill(1280, 720)],
+                                             format='PNG',
+                                             options={'quality': 60})
     __backgroundImageLarge = ImageSpecField(source='backgroundImage',
-                                          processors=[ResizeToFill(1920, 1080)],
-                                          format='PNG',
-                                          options={'quality': 60})
+                                            processors=[ResizeToFill(1920, 1080)],
+                                            format='PNG',
+                                            options={'quality': 60})
     __backgroundImageXLarge = ImageSpecField(source='backgroundImage',
-                                           processors=[ResizeToFill(3840, 2160)],
-                                           format='PNG',
-                                           options={'quality': 60})
+                                             processors=[ResizeToFill(3840, 2160)],
+                                             format='PNG',
+                                             options={'quality': 60})
 
     def __hasImageField(self):
         try:
@@ -250,3 +249,4 @@ class Section(models.Model):
         if self.__hasImageField():
             return self.__backgroundImageXLarge.url
         return None
+

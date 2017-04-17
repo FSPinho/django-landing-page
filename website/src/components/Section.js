@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import MobileDetect from 'mobile-detect'
 import muiThemeable from 'material-ui/styles/muiThemeable'
-
 import { Drawer, MenuItem } from 'material-ui'
+
+import { FadeDownUp } from 'components/animations'
 
 class Section extends Component {
 
@@ -16,16 +17,18 @@ class Section extends Component {
         const backgroundImage = isMobile ? section.backgroundImageLarge : section.backgroundImageMedium
         const backgroundColor = section.backgroundColor ? section.backgroundColor.value : null
         return (
-            <div
-                style={{
-                    height: (section.fullHeight ? `calc(100vh - 2 * ${theme.appBar.height}px)` : 'auto'),
-                    background: `${backgroundColor} url('${backgroundImage}') center / cover`,
-                    paddingTop: theme.appBar.height,
-                    paddingBottom: theme.appBar.height,
-                }}
-            >
-                Section {section.id}
-            </div>
+            <FadeDownUp>
+                <div
+                    style={{
+                        height: (section.fullHeight ? `calc(100vh - 2 * ${theme.appBar.height}px)` : 'auto'),
+                        background: `${backgroundColor} url('${backgroundImage}') center / cover`,
+                        paddingTop: theme.appBar.height,
+                        paddingBottom: theme.appBar.height,
+                    }}
+                >
+                    Section {section.id}
+                </div>
+            </FadeDownUp>
         )
     }
 

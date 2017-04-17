@@ -1,11 +1,11 @@
 import AppRouter from 'components/AppRouter'
 import Page from 'components/Page'
-import Sidenav from 'components/Sidenav'
+import Footer from 'components/Footer'
 import Section from 'components/Section'
 
 export {
     AppRouter, 
     Page,
-    Sidenav,
-    Section
+    Section,
+    Footer
 }

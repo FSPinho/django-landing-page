@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Route } from 'react-router'
+import { Route, Redirect } from 'react-router'
 import { ConnectedRouter } from 'react-router-redux'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
@@ -16,20 +16,26 @@ class AppRouter extends Component {
             },
         })
 
-        const pageLinks = this.props.store.model.getIn(['model', 'page-link']).toJS()
+        const pages = this.props.store.model.getIn(['model', 'page']).toJS()
+        const defaultPage = pages.filter(p => p.mainPage)[0]
 
         return (
             <ConnectedRouter history={this.props.history}>
                 <MuiThemeProvider muiTheme={muiTheme}>
                     <div>
-                        
                         {
-                            pageLinks.map(pl => (
-                                <Route exact key={pl.page.name} path={`/${pl.page.path}`.replace(/\/+/, '/')}
-                                    render={props => (<Page {...props} page={pl.page} />)}
+                            pages.map(p => (
+
+                                <Route exact key={p.id} path={`/${p.path}`.replace(/\/+/, '/')}
+                                    render={props => (<Page {...props} page={p} />)}
                                 >
                                 </Route>
                             ))
+                        }
+                        {
+                            defaultPage ? (
+                                <Redirect exact form='/' to={`/${defaultPage.path}`.replace(/\/+/, '/')} />
+                            ) : ('')
                         }
                     </div>
                 </MuiThemeProvider>

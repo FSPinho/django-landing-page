@@ -4,9 +4,9 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from rest_framework import viewsets
 
-from api.models import Page, Toolbar, SocialLink, ToolbarLink, PageLink, Section
+from api.models import Page, Toolbar, SocialLink, ToolbarLink, Section
 from api.serializers import PageSerializer, ToolbarSerializer, SocialLinkSerializer, ToolbarLinkSerializer, \
-    PageLinkSerializer, SectionSerializer
+    SectionSerializer
 
 
 class PageViewSet(viewsets.ModelViewSet):
@@ -17,11 +17,6 @@ class PageViewSet(viewsets.ModelViewSet):
 class ToolbarViewSet(viewsets.ModelViewSet):
     queryset = Toolbar.objects.all()
     serializer_class = ToolbarSerializer
-
-
-class PageLinkViewSet(viewsets.ModelViewSet):
-    queryset = PageLink.objects.all()
-    serializer_class = PageLinkSerializer
 
 
 class SocialLinkViewSet(viewsets.ModelViewSet):
