@@ -8,7 +8,6 @@ olefile==0.44
 packaging==16.8
 pilkit==2.0
 Pillow==4.1.0
-polls==0.0.4
 pyparsing==2.2.0
 pytz==2017.2
 six==1.10.0
