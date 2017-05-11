@@ -1,3 +1,7 @@
+## Django Landing Page
+
+[![Build Status](https://travis-ci.org/FelipePinhoUFC/django-landing-page.svg?branch=master)](https://travis-ci.org/FelipePinhoUFC/django-landing-page)
+
 ## run with:
 ```
 virtualenv venv
