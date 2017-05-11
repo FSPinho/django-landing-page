@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.test import TestCase
-from api.models import PageLink, SocialLink, Page, Toolbar, ToolbarLink
+from api.models import SocialLink, Page, Toolbar, ToolbarLink
 
 class SocialLinkTest(TestCase):
     def setUp(self):
